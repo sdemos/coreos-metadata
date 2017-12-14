@@ -22,7 +22,6 @@ extern crate error_chain;
 #[macro_use]
 extern crate slog;
 extern crate slog_term;
-extern crate slog_async;
 #[macro_use]
 extern crate slog_scope;
 
@@ -53,9 +52,8 @@ quick_main!(run);
 
 fn run() -> Result<()> {
     // setup logging
-    let decorator = slog_term::TermDecorator::new().build();
+    let decorator = slog_term::PlainSyncDecorator::new(std::io::stdout());
     let drain = slog_term::FullFormat::new(decorator).build().fuse();
-    let drain = slog_async::Async::new(drain).build().fuse();
     let log = slog::Logger::root(drain, slog_o!());
     let _guard = slog_scope::set_global_logger(log);
 
